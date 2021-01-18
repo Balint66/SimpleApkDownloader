@@ -14,11 +14,22 @@ void main() async
   {
     latestId = int.parse(id);
   }
-  await test();
-  timer = Timer(Duration(hours: 1), test);
+
+  if(!await apkFile.exists())
+  {
+    await apkFile.create();
+  }
+
+  if(!await idFile.exists())
+  {
+    await idFile.create();
+  }
+
+  await test(null);
+  timer = Timer.periodic(Duration(hours: 1), test);
 }
 
-Future<void> test() async
+Future test(Timer timer) async
 {
   Map<String, dynamic> latestRelease = await fetchJSON(Uri(scheme: 'https', host: 'api.github.com', path: 'repositories/${Platform.environment["REPO"]}/releases/latest'));
   if(latestId != latestRelease['id'])
