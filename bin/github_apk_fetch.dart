@@ -84,7 +84,7 @@ Future updateFDroidRepo() async
   
   await gitdir.runCommand(['pull']);
 
-  var res = await Process.run('fdroid', ['update','-c'], workingDirectory: repoDir.parent.path, runInShell: true);
+  var res = await Process.run('fdroid', ['update','-c', '--rename-apks', '--use-date-from-apk'], workingDirectory: repoDir.parent.path, runInShell: true);
   if(res.exitCode != 0)
   {
     print(res.stderr);
