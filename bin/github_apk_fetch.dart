@@ -30,8 +30,9 @@ void main() async
   var repofull = Platform.environment['REPONAME'];
 
   gen = AuthTokenGen(jwtgen, client, repofull.split('/')[0], repofull.split('/')[1]);
+  var apks = repoDir.listSync().any((e)=> e is File && e.path.split('.').last == 'apk');
 
-  if( await apkFile.exists())
+  if( await repoDir.exists() && await GitDir.isGitDir(repoDir.parent.path) && apks)
   {
     gitdir = await GitDir.fromExisting(repoDir.parent.path);
     await updateFDroidRepo();
@@ -48,7 +49,7 @@ void main() async
 Future test(Timer timer) async
 {
   Map<String, dynamic> latestRelease = await fetchJSON(Uri(scheme: 'https', host: 'api.github.com', path: 'repositories/${Platform.environment["REPO"]}/releases/latest'));
-  if(latestId != latestRelease['id'] || !await apkFile.exists())
+  if(latestId != latestRelease['id'])
   {
     print('id missmatch');
     latestId = latestRelease['id'];
